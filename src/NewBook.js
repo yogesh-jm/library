@@ -1,21 +1,20 @@
 import React from "react";
 import BookActions from './data/BookActions'
+import BookStore from './data/BookStore'
 
 export default class NewBook extends React.Component {
-//   onClose = e => {
-//     this.props.onClose && this.props.onClose(e);
-//   };
     constructor(props) {
         super(props) //since we are extending class Table so we have to use super in order to override Component class constructor
-            this.state = {
+        BookActions.loadBooks()
+        this.state = {
                 formData: {},
+                books: BookStore.getBooks(),
             }
 
             Object.getOwnPropertyNames(NewBook.prototype).forEach((method) => {
                 this[method] = this[method].bind(this);
-              });
+            });
         }
-    
 
     handleNameUpdate(event) {
         const { formData } = this.state;
@@ -24,24 +23,21 @@ export default class NewBook extends React.Component {
         });
     }
 
-      handleAgeUpdate(event) {
+    handleAgeUpdate(event) {
         console.log('called age update', event.target.value );
         const { formData } = this.state;
         this.setState({
-          formData: Object.assign(formData, { age: event.target.value }),
+            formData: Object.assign(formData, { age: event.target.value }),
         });
     }
 
   handleSubmit(event) {
-    console.log('eeee', event);
     const { formData } = this.state;
     event.preventDefault();
-
-    let books =  [ {name: formData.name, age: formData.age}]
-
-
+    let newBook =  {name: formData.name, age: formData.age} 
+    let books = this.state.books;
+    books.push(newBook);
     BookActions.updateBooks(books);
-    
   }
 
   render() {
